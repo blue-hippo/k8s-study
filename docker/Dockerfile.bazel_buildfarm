@@ -1,0 +1,39 @@
+FROM ubuntu:20.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Minimum requirement packages
+RUN apt-get update && apt-get -y install \
+    build-essential \
+    clang \
+    git \
+    openjdk-11-jdk \
+    python3-dev \
+    python3-pip \
+ && rm -rf /var/lib/apt/lists/*
+
+# Install Bazelisk
+ARG BAZELISK_VERSION=v1.11.0
+ADD https://github.com/bazelbuild/bazelisk/releases/download/${BAZELISK_VERSION}/bazelisk-linux-amd64 /usr/local/bin
+RUN chmod 775 /usr/local/bin/bazelisk-linux-amd64 \
+ && ln -s /usr/local/bin/bazelisk-linux-amd64 /usr/local/bin/bazel
+
+# Debug utils
+RUN apt-get update && apt-get -y install \
+    dnsutils \
+    curl \
+    iproute2 \
+    iputils-ping \
+    less \
+    vim \
+ && rm -rf /var/lib/apt/lists/*
+
+# Bazel buildfarm
+ARG BUILDFAR_VERSION=1.13.0
+RUN mkdir -p /work \
+ && cd /work \
+ && git clone https://github.com/bazelbuild/bazel-buildfarm.git -b ${BUILDFAR_VERSION}
+RUN cd /work/bazel-buildfarm \
+ && bazel build //src/main/java/build/buildfarm:buildfarm-server //src/main/java/build/buildfarm:buildfarm-memory-worker
+
+WORKDIR /work/bazel-buildfarm
