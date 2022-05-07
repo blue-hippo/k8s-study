@@ -1,0 +1,14 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: foo
+spec:
+  containers:
+  - name: foo
+    image: hashicorp/http-echo:0.2.3
+    args:
+    - "-listen=:1234"
+    - "-text=foo"
+    ports:
+    - containerPort: 1234
+      hostPort: 80
