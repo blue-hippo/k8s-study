@@ -1,0 +1,26 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: bazel-remote-cache-server
+spec:
+  containers:
+  - name: bazel-remote-cache-server
+    image: bazel-nginx:1.21.6
+    imagePullPolicy: Never
+    ports:
+    - containerPort: 80
+
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: bazel-client
+spec:
+  containers:
+  - name: bazel-client
+    image: bazel-client:latest
+    imagePullPolicy: Never
+    command:
+    - "sleep"
+    args:
+    - "3600"
