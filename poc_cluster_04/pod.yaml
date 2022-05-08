@@ -1,0 +1,32 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: bazel-server
+spec:
+  containers:
+  - name: bazel-server
+    image: bazel-buildfarm:1.13.0
+    imagePullPolicy: Never
+    ports:
+    - containerPort: 8980
+    command:
+    - "sleep"
+    args:
+    - "3600"
+  restartPolicy: OnFailure
+
+---
+kind: Pod
+apiVersion: v1
+metadata:
+  name: bazel-client
+spec:
+  containers:
+  - name: bazel-client
+    image: bazel-client:latest
+    imagePullPolicy: Never
+    command:
+    - "sleep"
+    args:
+    - "3600"
+  restartPolicy: OnFailure
